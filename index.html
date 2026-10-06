@@ -1,80 +1,21 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SIR DIO RADIO - Live From Kumasi</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SIRDIO 100.20. PLAY</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:system-ui,sans-serif;background:#0a0a0a;color:#fff;min-height:100vh}
-.header{background:linear-gradient(135deg,#ff0000,#990000);padding:15px;text-align:center;position:sticky;top:0}
-.logo{font-size:28px;font-weight:900;letter-spacing:2px}
-.tag{font-size:12px;opacity:.9;margin-top:4px;letter-spacing:3px}
-.player-wrap{max-width:600px;margin:30px auto;padding:20px}
-.live-badge{background:red;color:white;padding:6px 16px;border-radius:20px;font-weight:800;font-size:13px;animation:pulse 1.5s infinite;display:inline-block;margin-bottom:15px}
-@keyframes pulse{0%{opacity:1}50%{opacity:.6}100%{opacity:1}}
-.player-card{background:#1a1a1a;border-radius:20px;padding:30px;text-align:center;border:1px solid #333}
-.play-btn{width:90px;height:90px;background:linear-gradient(135deg,#ff0000,#ff4444);border:none;border-radius:50%;color:white;font-size:36px;cursor:pointer;margin:20px auto;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 30px rgba(255,0,0,.4)}
-.now{margin-top:20px}
-.now h2{color:#ff4444;font-size:14px;letter-spacing:2px;margin-bottom:8px}
-.now p{font-size:20px;font-weight:700}
-.box{background:#151515;padding:20px;border-radius:12px;border-left:4px solid #ff0000;margin:15px auto;max-width:600px}
-.box h3{font-size:14px;color:#ff4444;margin-bottom:6px}
-.box p{font-size:14px;color:#aaa;line-height:1.6}
-.footer{text-align:center;padding:30px;color:#666;font-size:12px}
+body{margin:0;background:#111;color:#fff;font-family:Arial;text-align:center}
+.header{background:#d00000;padding:20px;font-size:26px;font-weight:bold}
+.card{background:#222;margin:20px;padding:25px;border-radius:15px}
+audio{width:100%;margin-top:20px}
 </style>
 </head>
 <body>
-<div class="header">
-<div class="logo">SIR DIO RADIO</div>
-<div class="tag">LIVE FROM KUMASI • GHANA</div>
+<div class="header">SIRDIO PLAY - KUMASI</div>
+<div class="card">
+<h2>🎧 Now Playing</h2>
+<p>ALHA-01</p>
+<audio controls src="ALHA-01.mp3"></audio>
 </div>
-<div class="player-wrap">
-<div style="text-align:center">
-<span class="live-badge">● LIVE</span>
-<div class="player-card">
-<h1 style="font-size:22px;margin-bottom:5px">Listen Live Now</h1>
-<p style="color:#888;font-size:13px">24/7 Hit Music & Talk</p>
-<button class="play-btn" id="playBtn" onclick="togglePlay()">▶</button>
-<audio id="radio" preload="none">
-<source src="https://stream.zeno.fm/your-stream-link" type="audio/mpeg">
-</audio>
-<div class="now">
-<h2>NOW PLAYING</h2>
-<p>Sirdio Radio - Live</p>
-<p style="font-size:12px;color:#666;margin-top:6px" id="status">Tap play to start</p>
-</div>
-</div>
-</div>
-</div><div class="box">
-<h3>ABOUT US</h3>
-<p>Sir Dio Radio is Kumasi's hottest online radio. Music, news, entertainment 24/7. Broadcasting from Ashanti Region, Ghana to the world.</p>
-</div>
-<div class="box">
-<h3>CONTACT / REQUEST</h3>
-<p>WhatsApp: +233 XX XXX XXXX<br>Email: sirdioradio@gmail.com<br>Facebook: Sir Dio Radio</p>
-</div>
-<div class="box">
-<h3>HOW TO LISTEN</h3>
-<p>Just tap the big red PLAY button above. Works on all phones. Replace stream link with your real link from Zeno.fm</p>
-</div>
-<div class="footer">
-<p>© 2026 SIR DIO RADIO • Kumasi, Ghana<br>Powered by GitHub Pages</p>
-</div>
-<script>
-let isPlaying=false;
-const radio=document.getElementById('radio');
-const btn=document.getElementById('playBtn');
-const status=document.getElementById('status');
-function togglePlay(){
-if(!isPlaying){
-radio.play().then(()=>{
-isPlaying=true;btn.innerHTML='❚❚';status.textContent='● LIVE NOW';status.style.color='#0f0';
-}).catch(e=>{status.textContent='Stream offline - add stream link';alert('Add your stream URL! Find line with: stream.zeno.fm/your-stream-link and replace it');});
-}else{
-radio.pause();isPlaying=false;btn.innerHTML='▶';status.textContent='Paused';status.style.color='#888';
-}
-}
-</script>
 </body>
 </html>
