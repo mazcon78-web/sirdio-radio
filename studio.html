@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="viewport" content="width=device-width,initial-scale=1"><title>SIRDIO STUDIO B</title></head>
+<body style="background:#000;color:#fff;text-align:center;padding:15px;font-family:sans-serif">
+<h1 style="color:#FF6A00;text-shadow:0 0 10px #FF6A00">SIRDIO STUDIO B</h1>
+<div id="login" style="background:#111;border:3px solid #FF6A00;border-radius:20px;padding:20px;margin-top:20px">
+<input id="p" type="password" placeholder="Password SIRDIO2026" style="padding:12px;width:80%;background:#000;color:#fff;border:2px solid #FF6A00;border-radius:10px;text-align:center"><br><br>
+<button onclick="if(document.getElementById('p').value=='SIRDIO2026'){document.getElementById('login').style.display='none';document.getElementById('main').style.display='block'}else{alert('Wrong')}" style="padding:12px 30px;background:#FF6A00;color:#fff;border:none;border-radius:20px;font-weight:900">ENTER STUDIO</button>
+</div>
+<div id="main" style="display:none">
+<div style="border:2px solid #FF6A00;border-radius:15px;padding:15px;margin-top:15px"><audio id="a" src="./ALHA-01.mp3" controls loop style="width:100%"></audio></div>
+<button onclick="navigator.mediaDevices.getUserMedia({audio:true}).then(()=>alert('MIC LIVE!')).catch(()=>alert('Allow Mic'))" style="margin-top:15px;padding:15px;width:48%;background:#111;border:2px solid #FF6A00;border-radius:15px;color:#FF6A00;font-weight:900">🎙️ MIC</button>
+<button style="padding:15px;width:48%;background:#FF0000;border:none;border-radius:15px;color:#fff;font-weight:900">🔴 REC</button>
+<p style="margin-top:20px;background:linear-gradient(90deg,#FF6A00,#FF9000);padding:10px;border-radius:10px;color:#000;font-weight:900">https://mazcon78-web.github.io/sirdio-radio/</p>
+</div>
+</body>
+</html>
