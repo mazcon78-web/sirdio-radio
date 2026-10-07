@@ -1,30 +1,44 @@
-<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><title>SIRDIO STUDIO B - ABBEY ROAD</title></head>
-<body style="background:radial-gradient(circle,#222,#000);color:#fff;text-align:center;padding:10px;font-family:sans-serif;margin:0">
-<h1 style="color:#FF6A00;text-shadow:0 0 20px #FF6A00;margin:15px 0 5px 0">SIRDIO STUDIO B</h1>
-<p style="color:#FF6A00;letter-spacing:3px;font-size:10px;margin:0">ABBEY ROAD ANALOG LOUD EDITION</p>
+<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><title>SIRDIO STUDIO B PRO</title></head>
+<body style="background:#000;color:#fff;font-family:sans-serif;margin:0;padding:15px">
+<div id="lock" style="position:fixed;inset:0;background:#000;z-index:99;display:flex;align-items:center;justify-content:center"><div style="background:#111;border:3px solid #FF6A00;border-radius:20px;padding:25px;text-align:center;width:80%"><h2 style="color:#FF6A00">SIRDIO STUDIO B</h2><p style="font-size:11px;letter-spacing:3px;color:#FF6A00">ABBEY ROAD PRO</p><input id="pw" type="password" placeholder="Enter Password" style="width:100%;padding:15px;border-radius:12px;border:2px solid #333;background:#000;color:#fff;margin-top:15px;text-align:center"><button onclick="if(document.getElementById('pw').value==='SIRDIO2026'){document.getElementById('lock').style.display='none'}else{alert('Wrong Password!')}" style="width:100%;margin-top:15px;padding:15px;background:#FF6A00;border:none;border-radius:12px;color:#fff;font-weight:900">UNLOCK STUDIO 🔓</button><p style="font-size:10px;opacity:0.5;margin-top:10px">Hint: SIRDIO2026</p></div></div>
 
-<div style="background:linear-gradient(145deg,#2a2a2a,#111);border:3px solid #FF6A00;border-radius:20px;padding:15px;margin:15px 0;box-shadow:inset 0 0 20px #000,0 0 20px #FF6A0055">
-<p style="margin:0 0 10px 0;color:#00FF00;font-weight:bold">● ABBEY ROAD CONSOLE - LOUD</p>
-<audio id="a" src="./ALHA-01.mp3" loop style="width:100%"></audio>
+<h1 style="color:#FF6A00;text-align:center;margin:0;text-shadow:0 0 15px #FF6A00">SIRDIO STUDIO B</h1>
+<p style="text-align:center;color:#FF6A00;font-size:10px;letter-spacing:3px;margin:5px 0 15px">ABBEY ROAD ANALOG LOUD • PRO</p>
+
+<div style="background:#1a1a1a;border:3px solid #FF6A00;border-radius:20px;padding:15px">
+<audio id="player" src="./ALHA-01.mp3" controls style="width:100%"></audio>
+<div style="background:#000;border-radius:10px;padding:10px;margin-top:12px;border:1px solid #333"><p style="margin:0 0 5px;font-size:9px;opacity:0.5">VU METER • ABBEY ROAD</p><div style="height:18px;background:#111;border-radius:10px;overflow:hidden"><div id="vu" style="height:100%;width:35%;background:linear-gradient(90deg,#0f0,#ff0,#f60,#f00)"></div></div></div>
+
+<div style="display:flex;gap:10px;margin-top:12px">
+<button id="micBtn" style="flex:1;padding:15px;background:#111;border:2px solid #FF6A00;border-radius:12px;color:#FF6A00;font-weight:900">🎙️ MIC OFF</button>
+<button id="recBtn" style="flex:1;padding:15px;background:#111;border:2px solid red;border-radius:12px;color:red;font-weight:900">🔴 REC</button>
+</div>
+<button onclick="let p=document.getElementById('player');p.volume=1;p.play();this.innerText='💥 MAX LOUD ACTIVE!';this.style.background='red'" style="width:100%;margin-top:12px;padding:15px;background:#FF6A00;border:none;border-radius:12px;color:#fff;font-weight:900">🔊 ABBEY ROAD LOUD - TAP FOR MAX</button>
+</div>
+
+<div style="background:#1a1a1a;border:2px solid #333;border-radius:15px;padding:12px;margin-top:12px">
+<p style="margin:0 0 10px;color:#FF6A00;font-weight:900;font-size:12px">📀 PLAYLIST CONTROL</p>
+<select id="plist" onchange="document.getElementById('player').src=this.value;document.getElementById('player').play()" style="width:100%;padding:12px;border-radius:10px;background:#000;color:#fff;border:1px solid #333">
+<option value="./ALHA-01.mp3">ALHA-01.mp3 • Main Track</option>
+<option value="./ALHA-01.mp3">ALHA-01.mp3 • Loop 2</option>
+<option value="./ALHA-01.mp3">+ Add More Songs Soon</option>
+</select>
 <div style="display:flex;gap:8px;margin-top:10px">
-<button onclick="document.getElementById('a').play();document.getElementById('a').volume=1" style="flex:1;padding:14px;background:#FF6A00;border:none;border-radius:12px;color:#fff;font-weight:900;font-size:16px">▶ PLAY LOUD</button>
-<button onclick="document.getElementById('a').pause()" style="flex:1;padding:14px;background:#333;border-radius:12px;color:#fff;border:1px solid #555">⏸ PAUSE</button>
+<button onclick="document.getElementById('player').currentTime-=10" style="flex:1;padding:10px;background:#000;border:1px solid #333;border-radius:8px;color:#fff">⏪ -10s</button>
+<button onclick="let p=document.getElementById('player');p.paused?p.play():p.pause()" style="flex:1;padding:10px;background:#FF6A00;border:none;border-radius:8px;color:#fff;font-weight:900">⏯️ PLAY/PAUSE</button>
+<button onclick="document.getElementById('player').currentTime+=10" style="flex:1;padding:10px;background:#000;border:1px solid #333;border-radius:8px;color:#fff">+10s ⏩</button>
 </div>
-<div style="margin-top:12px;background:#000;border-radius:10px;padding:10px;border:1px solid #333">
-<p style="font-size:10px;opacity:0.5;margin:0 0 5px 0">ANALOG VU METER</p>
-<div style="height:20px;background:#111;border-radius:10px;overflow:hidden;display:flex;gap:2px"><div id="vu" style="width:30%;height:100%;background:linear-gradient(90deg,#00FF00,#FFFF00,#FF6A00,#FF0000);transition:width 0.2s"></div></div>
-</div>
-<div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:10px">
-<div style="background:#000;border-radius:12px;padding:10px;border:1px solid #FF6A00"><p style="margin:0;font-size:10px;color:#FF6A00">VOLUME</p><input type="range" min="0" max="100" value="100" oninput="document.getElementById('a').volume=this.value/100" style="width:100%;accent-color:#FF6A00"></div>
-<div style="background:#000;border-radius:12px;padding:10px;border:1px solid #FF6A00"><p style="margin:0;font-size:10px;color:#FF6A00">BASS BOOST</p><input type="range" min="0" max="100" value="60" style="width:100%;accent-color:#FF6A00"></div>
-</div>
-<button id="loud" onclick="let aud=document.getElementById('a');if(this.innerText.includes('LOUD OFF')){this.innerText='🔊 ABBEY ROAD LOUD ON';this.style.background='#FF6A00';aud.volume=1}else{this.innerText='💥 LOUD OFF - MAX POWER!';this.style.background='#FF0000';aud.volume=1;alert('ABBEY ROAD LOUD! Bass + Volume MAX! 🔊🔥')}" style="margin-top:12px;width:100%;padding:15px;background:#FF6A00;border:none;border-radius:15px;color:#fff;font-weight:900;font-size:14px;box-shadow:0 0 15px #FF6A00">🔊 ABBEY ROAD LOUD ON</button>
+<p id="recStatus" style="font-size:10px;opacity:0.6;margin-top:10px;text-align:center">Ready to Record</p>
 </div>
 
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-<button onclick="navigator.mediaDevices.getUserMedia({audio:true}).then(()=>{this.innerText='🎙️ MIC LIVE';this.style.background='#00FF00';this.style.color='#000'}).catch(()=>alert('Allow mic'))" style="padding:16px;background:#111;border:2px solid #FF6A00;border-radius:15px;color:#FF6A00;font-weight:900">🎙️ MIC</button>
-<button style="padding:16px;background:#FF0000;border:none;border-radius:15px;color:white;font-weight:900">🔴 REC</button>
-</div>
-<p style="margin-top:15px;background:#FF6A00;padding:10px;border-radius:10px;color:#000;font-weight:900;font-size:11px">https://mazcon78-web.github.io/sirdio-radio/</p>
-<script>setInterval(()=>{let vu=document.getElementById('vu');if(vu){let w=20+Math.random()*80;vu.style.width=w+'%'}},200)</script>
+<script>
+setInterval(()=>{document.getElementById('vu').style.width=(20+Math.random()*80)+'%'},150);
+let micStream, rec, chunks=[];
+document.getElementById('micBtn').onclick=async function(){
+if(this.innerText.includes('OFF')){micStream=await navigator.mediaDevices.getUserMedia({audio:true});this.innerText='🎙️ MIC LIVE - GREEN';this.style.borderColor='#0f0';this.style.color='#0f0';document.getElementById('recStatus').innerText='🎙️ Mic Live - Monitoring'}else{micStream.getTracks().forEach(t=>t.stop());this.innerText='🎙️ MIC OFF';this.style.borderColor='#FF6A00';this.style.color='#FF6A00';document.getElementById('recStatus').innerText='Mic Off'}
+};
+document.getElementById('recBtn').onclick=function(){
+if(this.innerText.includes('REC') && !this.innerText.includes('STOP')){chunks=[];let dest=new MediaStream();let player=document.getElementById('player');let ctx=new (window.AudioContext||window.webkitAudioContext)();let d=ctx.createMediaStreamDestination();if(micStream){ctx.createMediaStreamSource(micStream).connect(d)}if(!player.paused){let s=ctx.createMediaElementSource(player);s.connect(d);s.connect(ctx.destination)}rec=new MediaRecorder(d.stream);rec.ondataavailable=e=>chunks.push(e.data);rec.onstop=()=>{let blob=new Blob(chunks,{type:'audio/webm'});let url=URL.createObjectURL(blob);let a=document.createElement('a');a.href=url;a.download='SIRDIO-REC-'+Date.now()+'.webm';a.click();document.getElementById('recStatus').innerText='✅ Saved! Check Downloads'};rec.start();this.innerText='⏹️ STOP REC';this.style.background='red';this.style.color='#fff';document.getElementById('recStatus').innerText='🔴 REC Recording...'}else{rec.stop();this.innerText='🔴 REC';this.style.background='#111';this.style.color='red'}
+};
+</script>
 </body></html>
