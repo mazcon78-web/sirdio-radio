@@ -1,0 +1,16 @@
+<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><title>SIRDIO LIVE</title>
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<style>body{margin:0;background:#000;color:#fff;font-family:system-ui;display:flex;justify-content:center;align-items:center;min-height:100vh;padding:20px}.box{border:2px solid #ff9500;border-radius:18px;padding:24px;width:100%;max-width:360px;text-align:center;background:#111}.btn{width:100%;padding:22px;border-radius:14px;border:0;font-weight:900;font-size:19px;background:#00ff88;color:#000}</style></head><body>
+<div class="box"><h2>🔴 SIRDIO RADIO LIVE</h2><p>Sir Dio Ra - Kumasi</p><button id="b" class="btn">🔊 TAP TO LISTEN</button><p id="s" style="margin-top:12px">Studio B Offline</p><p style="font-size:11px;margin-top:16px">WhatsApp: 026 705 2785</p></div>
+<script>
+let peer,audio=new Audio();audio.autoplay=true;
+document.getElementById('b').onclick=()=>{
+document.getElementById('s').textContent='Connecting to Studio B...';
+peer=new Peer();peer.on('open',()=>{
+let call=peer.call('sirdio-studio-b-master',new MediaStream(),{metadata:{type:'listener'}});
+call.on('stream',st=>{audio.srcObject=st;audio.play();document.getElementById('b').textContent='🔴 LIVE - LISTENING';document.getElementById('s').textContent='🔴 LIVE NOW';document.getElementById('b').style.background='#ff9500';});
+call.on('close',()=>{document.getElementById('s').textContent='Studio ended live';});
+});
+peer.on('error',()=>{document.getElementById('s').textContent='Studio not live yet - try again';});
+};
+</script></body></html>
