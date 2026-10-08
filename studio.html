@@ -1,0 +1,43 @@
+<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SIRDIO STUDIO B - FIXED</title>
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<style>*{box-sizing:border-box}body{margin:0;background:#0a0a0a;color:#fff;font-family:system-ui;padding:10px}
+.card{background:#151515;border-radius:12px;padding:12px;margin:8px 0;border:2px solid #ff9500}
+.btn{padding:14px 18px;border-radius:10px;border:0;font-weight:800;margin:3px}
+.g{background:#00ff88;color:#000}.o{background:#ff9500;color:#000}.r{background:#222;color:#fff}
+.item{display:flex;justify-content:space-between;padding:7px;background:#000;margin:4px 0;border-radius:8px;font-size:13px}
+input{padding:10px;border-radius:8px;border:1px solid #333;background:#000;color:#fff;width:100%}</style></head><body>
+<h2>🎙️ SIRDIO STUDIO B</h2>
+<div class="card">
+<div style="display:flex;flex-wrap:wrap">
+<button id="play" class="btn g">▶ PLAY DECK</button>
+<button id="abbey" class="btn o">🎛️ ABBEY ROAD: OFF</button>
+<button id="myMic" class="btn r">MY MIC OFF</button>
+</div>
+<audio id="player" controls playsinline preload="auto" style="width:100%;margin-top:10px"></audio>
+<p id="st">Loading ALHA-01.mp3...</p>
+<p style="font-size:11px">ID: <b id="myId" style="color:#00ff88"></b> | <b id="mode" style="color:#ff9500">CLEAN</b></p>
+</div>
+<div class="card"><h3>🎵 PLAYLIST</h3>
+<input type="file" id="files" accept="audio/*" multiple>
+<button id="add" class="btn g" style="width:100%;margin-top:8px">+ ADD CHOSEN FILE TO PLAYLIST</button>
+<div id="pl" style="margin-top:10px"></div></div>
+<div class="card"><h3>👥 GUEST</h3><div id="guests">Waiting WhatsApp 026 705 2785</div><audio id="guestAudio" controls autoplay style="width:100%"></audio></div>
+<script>
+const player=document.getElementById('player');
+let playlist=['./ALHA-01.mp3']; // FIXED PATH
+let cur=0,audioCtx,src,gain,lowF,highF,sat,comp,dest,myMicS,myOn=false,abbeyOn=false;
+function render(){document.getElementById('pl').innerHTML=playlist.map((t,i)=>`<div class="item"><span>${i==cur?'▶ ':''}${t.split('/').pop().slice(0,30)}</span><span><button onclick="playT(${i})" style="background:#00ff88;border:0;padding:4px 8px;border-radius:6px">PLAY</button></span></div>`).join('');}
+window.playT=i=>{cur=i;player.src=playlist[i];player.load();player.play().catch(e=>{document.getElementById('st').textContent='Tap PLAY DECK again - browser blocked: '+e.message;});};
+function init(){if(audioCtx)return;audioCtx=new(window.AudioContext||window.webkitAudioContext)();dest=audioCtx.createMediaStreamDestination();src=audioCtx.createMediaElementSource(player);lowF=audioCtx.createBiquadFilter();lowF.type='lowshelf';lowF.frequency.value=250;highF=audioCtx.createBiquadFilter();highF.type='highshelf';highF.frequency.value=4000;sat=audioCtx.createWaveShaper();let c=new Float32Array(44100);for(let i=0;i<44100;i++){let x=i*2/44100-1;c[i]=Math.tanh(x*1.2);}sat.curve=c;sat.oversample='2x';comp=audioCtx.createDynamicsCompressor();comp.threshold.value=-20;comp.ratio.value=2.5;gain=audioCtx.createGain();gain.gain.value=0.9;src.connect(lowF);lowF.connect(highF);highF.connect(sat);sat.connect(comp);comp.connect(gain);gain.connect(audioCtx.destination);gain.connect(dest);}
+// AUTO LOAD FIRST FILE
+player.src=playlist[0];render();
+player.oncanplay=()=>{document.getElementById('st').textContent='✅ ALHA-01.mp3 loaded - '+Math.floor(player.duration)+' sec - Tap PLAY DECK';};
+player.onerror=()=>{document.getElementById('st').textContent='❌ ALHA file not found. Check: mazcon78-web.github.io/sirdio-radio/ALHA-01.mp3';};
+document.getElementById('play').onclick=()=>{init();if(player.paused){player.play().then(()=>{document.getElementById('st').textContent='▶ Playing - Abbey Road '+ (abbeyOn?'ON Warm':'OFF');}).catch(e=>{document.getElementById('st').textContent='Browser needs tap again: '+e.message;});}else{player.pause();}};
+document.getElementById('abbey').onclick=function(){init();abbeyOn=!abbeyOn;lowF.gain.value=abbeyOn?3:0;highF.gain.value=abbeyOn?-1.5:0;gain.gain.value=abbeyOn?1.1:0.9;this.textContent=abbeyOn?'🎛️ ABBEY ROAD: ON - WARM':'🎛️ ABBEY ROAD: OFF';this.style.background=abbeyOn?'#ffd700':'#ff9500';document.getElementById('mode').textContent=abbeyOn?'ABBEY ROAD WARM CLEAN':'CLEAN';};
+document.getElementById('files').onchange=e=>{window.tempFiles=e.target.files;document.getElementById('st').textContent=e.target.files.length+' file(s) chosen - NOW TAP + ADD BUTTON';};
+document.getElementById('add').onclick=()=>{if(!window.tempFiles||window.tempFiles.length==0){alert('First CHOOSE FILES then tap ADD');return;}for(let f of window.tempFiles){let u=URL.createObjectURL(f);playlist.push(u);}render();document.getElementById('st').textContent='Added! Tap PLAY in list';};
+document.getElementById('myMic').onclick=async function(){init();if(!myOn){let s=await navigator.mediaDevices.getUserMedia({audio:true});let ms=audioCtx.createMediaStreamSource(s);ms.connect(gain);myMicS=s;myOn=true;this.textContent='MY MIC LIVE';this.style.background='#00ff88';}else{myMicS.getTracks().forEach(t=>t.stop());myOn=false;this.textContent='MY MIC OFF';this.style.background='#222';}};
+let peer=new Peer('sirdio-studio-b-master');peer.on('open',id=>{document.getElementById('myId').textContent=id;});peer.on('call',call=>{call.answer(dest?.stream||null);call.on('stream',s=>{document.getElementById('guestAudio').srcObject=s;document.getElementById('guests').innerHTML=`<b style="color:#00ff88">✅ GUEST LIVE</b>`;if(audioCtx){let gs=audioCtx.createMediaStreamSource(s);gs.connect(gain);}});});
+</script></body></html>
