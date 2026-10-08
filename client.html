@@ -1,0 +1,11 @@
+<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CLIENT PRO MIC</title>
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<style>body{margin:0;background:#0a0a0a;color:#fff;font-family:system-ui;padding:20px;text-align:center}.card{background:#151515;border-radius:16px;padding:20px;max-width:420px;margin:auto;border:1px solid #333}.btn{padding:16px;border-radius:12px;border:0;font-weight:900;width:100%;margin:8px 0;font-size:18px}.g{background:#00ff88;color:#000}.o{background:#ff9500;color:#000}.r{background:#222;color:#fff}input{padding:12px;width:100%;border-radius:8px;background:#000;color:#fff;border:1px solid #333}</style></head><body>
+<h2>🎤 SIRDIO CLIENT PRO MIC</h2><div class="card"><input id="name" placeholder="Your Name"><p style="font-size:11px;color:#aaa">Pro Quality 48kHz - When ON, WhatsApp alert to 026 705 2785</p><button id="req" class="btn o">🎤 REQUEST STUDIO</button><button id="go" class="btn r" disabled>🔴 GO LIVE AFTER CONFIRM</button><p id="st">Ready</p></div>
+<script>
+let micStream,peer;
+document.getElementById('req').onclick=async()=>{
+try{micStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:true,autoGainControl:true,sampleRate:48000,channelCount:2}});document.getElementById('req').textContent='✅ MIC READY';document.getElementById('req').style.background='#00ff88';let n=document.getElementById('name').value||'Guest';window.open(`https://wa.me/233267052785?text=SIRDIO CLIENT REQUEST%0AName:${n}%0AWaiting to join Studio B%0APlease ANSWER in studio`,'_blank');document.getElementById('go').disabled=false;document.getElementById('go').style.background='#00ff88';document.getElementById('st').textContent='WhatsApp sent to 0267052785! Wait for YES, then tap GO LIVE';}catch(e){alert(e.message);}};
+document.getElementById('go').onclick=()=>{peer=new Peer();peer.on('open',()=>{let call=peer.call('sirdio-studio-b-master',micStream);document.getElementById('go').textContent='LIVE ON AIR WITH STUDIO!';document.getElementById('go').style.background='#f00';document.getElementById('st').textContent='YOU ARE LIVE! Speak!';});};
+</script></body></html>
