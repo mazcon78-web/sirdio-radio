@@ -1,0 +1,16 @@
+<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><title>QUEST MIC</title>
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<style>body{margin:0;background:#0a0a0a;color:#fff;font-family:system-ui;display:flex;justify-content:center;align-items:center;min-height:100vh;padding:20px}.box{background:#151515;border-radius:18px;padding:24px;width:100%;max-width:360px;text-align:center;border:1px solid #333}.btn{width:100%;padding:28px;border-radius:16px;border:0;font-weight:900;font-size:20px;background:#222;color:#fff}.btn.req{background:#ff0000;animation:blink 1s infinite}.btn.live{background:#00ff88;color:#000}@keyframes blink{50%{opacity:0.5}}</style></head><body>
+<div class="box"><h2>🎤 QUEST MIC</h2><button id="b" class="btn">🎤 TAP TO REQUEST</button><p id="s">One button only</p><audio id="a" autoplay style="width:100%;margin-top:12px"></audio></div>
+<script>
+let peer,micStream,myId;
+document.getElementById('b').onclick=async()=>{
+let btn=document.getElementById('b'),st=document.getElementById('s');
+if(btn.classList.contains('live')){location.reload();return;}
+try{
+micStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true}});
+peer=new Peer();peer.on('open',id=>{myId=id;let conn=peer.connect('sirdio-studio-b-master');conn.on('open',()=>{conn.send({type:'guest-request',peerId:id});btn.textContent='🔴 REQUEST SENT - WAIT DJ';btn.className='btn req';st.textContent='Red light blinking in Studio... DJ will tap to make you LIVE';});
+peer.on('call',call=>{call.answer(micStream);call.on('stream',s=>{document.getElementById('a').srcObject=s;btn.textContent='🟢 YOU ARE LIVE - TAP TO LEAVE';btn.className='btn live';st.textContent='GREEN - You are LIVE on SIRDIO!';});});
+}catch(e){st.textContent='Mic error: '+e.message;}
+};
+</script></body></html>
