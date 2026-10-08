@@ -1,0 +1,20 @@
+<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><title>GUEST MIC</title>
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<style>body{margin:0;background:#0a0a0a;color:#fff;font-family:system-ui;padding:12px}.card{background:#151515;padding:16px;border-radius:12px;border:1px solid #222}.btn{padding:16px;width:100%;border-radius:10px;border:0;font-weight:800;background:#00ff88;color:#000;margin-top:10px}</style></head><body>
+<div class="card">
+<h2>🎤 SIRDIO GUEST MIC</h2>
+<button id="mic" class="btn">🎤 TAP TO JOIN STUDIO B</button>
+<p id="st">WhatsApp DJ first: 026 705 2785</p>
+<audio id="remote" controls autoplay style="width:100%;margin-top:10px"></audio>
+</div>
+<script>
+let peer,local;
+document.getElementById('mic').onclick=async()=>{
+let s=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true}});
+local=s;document.getElementById('st').textContent='Mic ON - Calling Studio B...';
+peer=new Peer();peer.on('open',()=>{
+let call=peer.call('sirdio-studio-b-master',s,{metadata:{type:'guest'}});
+call.on('stream',rs=>{document.getElementById('remote').srcObject=rs;document.getElementById('st').textContent='✅ LIVE ON AIR - Studio B hearing you!';});
+});
+};
+</script></body></html>
