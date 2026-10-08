@@ -1,0 +1,56 @@
+<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><title>STUDIO B PRO</title>
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<style>body{margin:0;background:#0a0a0a;color:#fff;font-family:system-ui;padding:10px}.card{background:#151515;border-radius:12px;padding:12px;margin:8px 0;border:1px solid #222}.btn{padding:12px 16px;border-radius:10px;border:0;font-weight:800;margin:3px;cursor:pointer}.g{background:#00ff88;color:#000}.o{background:#ff9500;color:#000}.y{background:#ffd700;color:#000}.r{background:#222;color:#fff}.redBlink{background:#ff0000;color:#fff;animation:blink 0.8s infinite;width:100%;padding:16px;font-size:16px;border-radius:10px;border:0;font-weight:900}.greenLive{background:#00ff88;color:#000;width:100%;padding:16px;font-size:16px;border-radius:10px;border:0;font-weight:900}@keyframes blink{50%{opacity:0.4}}audio{width:100%}.pl{max-height:180px;overflow:auto;background:#0e0e0e;border-radius:8px;padding:6px;margin-top:8px}.track{padding:10px;border-radius:6px;margin:3px 0;background:#1f1f1f;cursor:pointer;display:flex;justify-content:space-between}.track.active{background:#00ff88;color:#000;font-weight:900}.small{font-size:11px;opacity:0.7}</style></head><body>
+<h3>🎙️ STUDIO B - CONTROLLER PRO</h3>
+
+<div class="card">
+<audio id="player" controls></audio>
+<div style="display:flex;flex-wrap:wrap;margin-top:8px">
+<button id="play" class="btn g">▶ PLAY</button>
+<button id="prev" class="btn r">⏮ PREV</button>
+<button id="next" class="btn r">NEXT ⏭</button>
+<button id="abbey" class="btn o">🎛️ ABBEY ROAD: OFF</button>
+<button id="mic" class="btn r">🎤 STUDIO MIC OFF</button>
+<button id="echo" class="btn r">🎧 DJ ECHO OFF</button>
+<button id="rec" class="btn r">⏺️ RECORD</button>
+</div>
+<div style="margin-top:10px;display:flex;gap:6px">
+<label class="btn y" style="flex:1;text-align:center">+ ADD SONGS<input id="fileIn" type="file" accept="audio/*" multiple hidden></label>
+<button id="auto" class="btn r" style="flex:1">🔁 AUTO: OFF</button>
+</div>
+<div id="playlist" class="pl"></div>
+<p id="st">Loading ALHA-01.mp3...</p>
+<p class="small">ID: <b id="myId" style="color:#00ff88">...</b> | Listeners: <span id="cnt">0</span> | Track: <span id="tInfo">1/1</span></p>
+</div>
+
+<div class="card"><h3 style="margin:0 0 8px">🚨 GUEST - RED BLINK</h3><div id="guestBox" class="small">No guest request</div><audio id="guestAudio" autoplay></audio></div>
+<div class="card"><button id="live" style="width:100%;padding:20px;background:#ff0000;color:#fff;font-size:19px;border-radius:12px;border:0;font-weight:900">🔴 GO LIVE - BROADCAST</button></div>
+
+<script>
+const player=document.getElementById('player');
+let tracks=[{name:'ALHA-01.mp3',url:'./ALHA-01.mp3'}],cur=0,autoNext=false;
+let ctx,src,gain,low,high,echoDelay,echoGain,dest,micS,recorder,chunks=[],liveOn=false,abbeyOn=false,echoOn=false,micOn=false,peer,pending=null;
+
+function renderPL(){let h='';tracks.forEach((t,i)=>{h+=`<div class="track ${i==cur?'active':''}" onclick="playIdx(${i})"><span>${i+1}. ${t.name}</span><span>${i==cur?'🔊':''}</span></div>`});document.getElementById('playlist').innerHTML=h;document.getElementById('tInfo').textContent=(cur+1)+'/'+tracks.length;}
+function loadIdx(i){cur=i;player.src=tracks[i].url;renderPL();player.play().catch(()=>{});document.getElementById('st').textContent='▶ Playing: '+tracks[i].name;}
+window.playIdx=loadIdx;
+function init(){if(ctx)return;ctx=new(window.AudioContext||window.webkitAudioContext)();dest=ctx.createMediaStreamDestination();src=ctx.createMediaElementSource(player);low=ctx.createBiquadFilter();low.type='lowshelf';low.frequency.value=250;high=ctx.createBiquadFilter();high.type='highshelf';high.frequency.value=4000;gain=ctx.createGain();gain.gain.value=0.95;echoDelay=ctx.createDelay();echoDelay.delayTime.value=0.28;echoGain=ctx.createGain();echoGain.gain.value=0;src.connect(low);low.connect(high);high.connect(gain);gain.connect(ctx.destination);gain.connect(dest);gain.connect(echoDelay);echoDelay.connect(echoGain);echoGain.connect(gain);}
+player.onended=()=>{if(autoNext){cur=(cur+1)%tracks.length;loadIdx(cur);}};
+
+document.getElementById('fileIn').onchange=e=>{for(let f of e.target.files){tracks.push({name:f.name,url:URL.createObjectURL(f)});}renderPL();document.getElementById('st').textContent=tracks.length+' tracks in playlist';};
+document.getElementById('play').onclick=()=>{init();if(player.src==''){loadIdx(0);}else player.paused?player.play():player.pause();};
+document.getElementById('prev').onclick=()=>{cur=(cur-1+tracks.length)%tracks.length;loadIdx(cur);};
+document.getElementById('next').onclick=()=>{cur=(cur+1)%tracks.length;loadIdx(cur);};
+document.getElementById('auto').onclick=function(){autoNext=!autoNext;this.textContent=autoNext?'🔁 AUTO: ON':'🔁 AUTO: OFF';this.style.background=autoNext?'#00ff88':'#222';};
+document.getElementById('abbey').onclick=function(){init();abbeyOn=!abbeyOn;low.gain.value=abbeyOn?3.8:0;high.gain.value=abbeyOn?-2:0;this.textContent=abbeyOn?'🎛️ ABBEY ROAD: ON WARM':'🎛️ ABBEY ROAD: OFF';this.style.background=abbeyOn?'#ffd700':'#ff9500';};
+document.getElementById('mic').onclick=async function(){init();if(!micOn){let s=await navigator.mediaDevices.getUserMedia({audio:true});let m=ctx.createMediaStreamSource(s);m.connect(gain);micS=s;micOn=true;this.textContent='🎤 MIC LIVE';this.style.background='#00ff88';}else{micS.getTracks().forEach(t=>t.stop());micOn=false;this.textContent='🎤 STUDIO MIC OFF';this.style.background='#222';}};
+document.getElementById('echo').onclick=function(){init();echoOn=!echoOn;echoGain.gain.value=echoOn?0.32:0;this.textContent=echoOn?'🎧 DJ ECHO ON':'🎧 DJ ECHO OFF';this.style.background=echoOn?'#00ff88':'#222';};
+document.getElementById('rec').onclick=function(){init();if(recorder&&recorder.state=='recording'){recorder.stop();this.textContent='⏺️ RECORD';this.style.background='#222';}else{chunks=[];recorder=new MediaRecorder(dest.stream);recorder.ondataavailable=e=>chunks.push(e.data);recorder.onstop=()=>{let b=new Blob(chunks,{type:'audio/webm'});let u=URL.createObjectURL(b);let a=document.createElement('a');a.href=u;a.download='SIRDIO-SESSION-'+Date.now()+'.webm';a.textContent='⬇️ DOWNLOAD RECORDING';a.style.cssText='display:block;background:#00ff88;color:#000;padding:12px;margin-top:8px;text-align:center;border-radius:8px;font-weight:900';document.getElementById('st').appendChild(a);};recorder.start();this.textContent='⏺️ REC ●';this.style.background='#ff0000';}};
+document.getElementById('live').onclick=function(){init();liveOn=!liveOn;this.textContent=liveOn?'🟢 LIVE NOW - TAP TO STOP':'🔴 GO LIVE - BROADCAST';this.style.background=liveOn?'#00ff88':'#ff0000';this.style.color=liveOn?'#000':'#fff';};
+
+// LOAD DEFAULT
+loadIdx(0);renderPL();
+peer=new Peer('sirdio-studio-b-master');peer.on('open',id=>{document.getElementById('myId').textContent=id;});
+peer.on('connection',conn=>{conn.on('data',d=>{if(d.type==='guest-request'){pending=d.peerId;document.getElementById('guestBox').innerHTML=`<button id="approve" class="redBlink">🔴 GUEST REQUESTING - TAP TO MAKE GREEN<br>${d.peerId.slice(0,8)}</button>`;document.getElementById('approve').onclick=()=>{let call=peer.call(d.peerId,dest.stream);call.on('stream',s=>{document.getElementById('guestAudio').srcObject=s;if(ctx){let gs=ctx.createMediaStreamSource(s);gs.connect(gain);}});document.getElementById('guestBox').innerHTML=`<button class="greenLive">🟢 GUEST LIVE - ${d.peerId.slice(0,8)}</button>`;};}});});
+peer.on('call',call=>{if(call.metadata&&call.metadata.type==='listener'){call.answer(dest?dest.stream:null);document.getElementById('cnt').textContent=parseInt(document.getElementById('cnt').textContent)+1;}});
+</script></body></html>
