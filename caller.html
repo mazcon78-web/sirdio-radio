@@ -1,7 +1,0 @@
-<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><script src="https://unpkg.com/peerjs@1.5.3/dist/peerjs.min.js"></script></head><body style="background:#000;color:#0f0;text-align:center;padding:20px;font-family:monospace">
-<h2>📞 CALL SIRDIO STUDIO</h2><button id="callBtn" style="padding:20px 40px;background:#0f0;color:#000;font-size:20px;font-weight:900;border-radius:10px">📞 TAP TO CALL STUDIO</button><p id="st" style="margin-top:20px">Ready</p><script>
-callBtn.onclick=async()=>{
-let s=await navigator.mediaDevices.getUserMedia({audio:true});
-let p=new Peer();p.on('open',()=>{let c=p.call('sirdio-studio-b-live-10020',s);st.innerText='📞 Calling studio... Wait for host to pick!';c.on('stream',()=>{st.innerText='🟢 YOU ARE LIVE ON AIR!';});});
-};
-</script></body></html>
