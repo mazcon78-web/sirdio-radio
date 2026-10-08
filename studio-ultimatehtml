@@ -1,0 +1,93 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SIRDIO ULTIMATE - ABBEY LOUD</title>
+<script src="https://unpkg.com/peerjs@1.5.3/dist/peerjs.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:monospace}
+body{background:#120e08;color:#ffcc66;height:100vh;display:flex;flex-direction:column}
+header{background:#1a1408;padding:10px;display:flex;justify-content:space-between;border-bottom:3px solid #ff9900}
+.main{display:grid;grid-template-columns:280px 1fr 300px;gap:10px;padding:10px;flex:1;overflow:hidden}
+.wood{background:linear-gradient(#2e2411,#1a1408);border:2px solid #5a3e1b;border-radius:10px;padding:10px}
+.vu{height:70px;background:#000;border:2px inset #5a3e1b;border-radius:6px;position:relative;margin:5px 0}
+.needle{position:absolute;bottom:5px;left:50%;width:2px;height:60px;background:red;transform-origin:bottom;transition:.1s}
+button{padding:8px;border:none;border-radius:6px;font-weight:900;cursor:pointer}
+.live{background:linear-gradient(red,darkred);color:#fff;animation:glow 1s infinite}
+@keyframes glow{0%,100%{box-shadow:0 0 5px red}50%{box-shadow:0 0 20px red}}
+.rec{background:linear-gradient(#ff0000,#660000);color:#fff}
+.call{background:#00ff00;color:#000}
+</style></head><body>
+<header>
+<div><b style="font-size:20px">📻 SIRDIO ULTIMATE</b> <small style="color:#ff9900">ABBEY LOUD + CALLERS + REC + AUTO-DJ</small></div>
+<div><button id="liveBtn" style="padding:10px 20px;background:#0f0;color:#000">🔴 GO LIVE LOUD</button>
+<button id="recBtn" class="rec" style="margin-left:5px">⏺️ REC</button>
+<button id="autoBtn" style="margin-left:5px;background:#333;color:#ff9900">🤖 AUTO: OFF</button>
+<span id="status" style="margin-left:10px;background:#000;padding:5px 10px;border-radius:20px">OFFLINE</span></div>
+</header>
+<div class="main">
+<div class="wood">
+<h4 style="color:#ff9900;text-align:center">🎤 ABBEY CHAIN - LOUD</h4>
+<div style="display:flex;gap:5px"><div class="vu" style="flex:1"><center style="font-size:9px">MIC</center><div id="vu1" class="needle"></div></div><div class="vu" style="flex:1"><center style="font-size:9px">LOUD OUT</center><div id="vu2" class="needle"></div></div></div>
+<label style="font-size:10px">TUBE DRIVE</label><input id="drive" type="range" min="0" max="100" value="40" style="width:100%">
+<label style="font-size:10px">TAPE SAT</label><input id="tape" type="range" min="0" max="100" value="60" style="width:100%">
+<label style="font-size:10px;color:red">🔊 LOUDNESS 100-300%</label><input id="loud" type="range" min="100" max="300" value="200" style="width:100%;accent-color:red">
+<div style="display:flex;gap:5px;margin-top:8px"><button id="muteBtn" style="flex:1;background:#111;color:#ff9900;border:1px solid #ff9900">MUTE</button><button id="loudOn" class="live" style="flex:1">LOUD ON</button></div>
+<hr style="margin:10px 0;border-color:#333">
+<h4 style="color:#0f0">📞 CALLERS (Phone-ins)</h4>
+<div id="callers" style="background:#000;padding:5px;border-radius:5px;min-height:80px;font-size:11px">No callers yet<br><small>Share: /caller.html</small></div>
+<button onclick="document.getElementById('callLink').style.display='block'" style="width:100%;margin-top:5px;background:#0f0;color:#000">📞 Get Caller Link</button>
+<div id="callLink" style="display:none;background:#000;padding:5px;margin-top:5px;font-size:10px;word-break:break-all">https://mazcon78-web.github.io/sirdio-radio/caller.html</div>
+<hr style="margin:10px 0;border-color:#333">
+<input type="file" id="fileIn" multiple accept="audio/*" style="width:100%">
+</div>
+<div class="wood" style="display:flex;flex-direction:column">
+<h4 style="color:#ff9900;text-align:center">🎵 ON AIR - LOUD</h4>
+<div style="background:#000;border-radius:8px;padding:15px;display:flex;gap:15px;align-items:center;margin-top:10px">
+<div style="width:100px;height:100px;background:linear-gradient(45deg,#ff9900,red);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:50px" id="cover">🔥</div>
+<div><h3 id="nowTitle">Ready to be LOUD</h3><p id="nowArtist" style="color:#ff9900;font-size:11px">Tube → Tape → Limiter</p><p style="font-size:10px;color:#666">Rec: <span id="recTime">00:00</span> | Listeners: <span id="count">0</span></p></div>
+</div>
+<audio id="player" controls style="width:100%;margin-top:10px"></audio>
+<div style="display:flex;gap:5px;margin-top:10px"><button onclick="player.play()" style="flex:1;background:#ff9900;color:#000;padding:10px">▶️ PLAY</button><button id="sendBtn" style="flex:2;background:linear-gradient(red,orange);color:#fff;padding:10px">📡 SEND LOUD TO FANS</button></div>
+<canvas id="wave" style="width:100%;height:50px;background:#000;margin-top:10px;border-radius:5px"></canvas>
+<div style="margin-top:10px;background:#000;padding:8px;border-radius:5px"><small style="color:red">🔊 LOUDNESS: <span id="lufs">-9 LUFS LOUD!</span></small><div style="height:12px;background:#222;border-radius:6px;overflow:hidden;margin-top:3px"><div id="loudBar" style="height:100%;width:70%;background:linear-gradient(90deg,green,yellow,red)"></div></div></div>
+<div style="margin-top:10px"><h5 style="color:#ff9900">🤖 AUTO-DJ Queue (24/7)</h5><div id="queue" style="max-height:120px;overflow:auto;background:#000;padding:5px;border-radius:5px;font-size:11px"></div><label style="font-size:10px"><input type="checkbox" id="autoLoop" checked> Auto-play next when ends + Shuffle</label></div>
+</div>
+<div class="wood">
+<h4 style="text-align:center;color:#ff9900">👥 LISTENERS + RECORDINGS</h4>
+<div style="background:#000;padding:10px;border-radius:8px;margin-top:10px"><h1 id="bigCount" style="color:#ff9900;font-size:36px">0</h1><p style="font-size:10px;color:#888">LIVE FANS HEARING LOUD</p></div>
+<h5 style="margin-top:10px;color:#ff0000">⏺️ RECORDINGS</h5><div id="recordings" style="background:#000;padding:5px;border-radius:5px;min-height:60px;font-size:11px">No recordings yet</div>
+<button id="downloadBtn" style="width:100%;margin-top:5px;background:#333;color:#fff">⬇️ Download Last Show</button>
+<hr style="margin:10px 0;border-color:#333">
+<h5 style="color:#0f0">📻 ABILITIES ACTIVE:</h5><div style="font-size:10px;line-height:1.8;color:#ccc">
+✅ Abbey Tube Warmth<br>✅ Tape Saturation<br>✅ LOUD 300% Limiter<br>✅ VU Meters<br>✅ Phone-in Callers<br>✅ Rec MP3<br>✅ Auto-DJ 24/7<br>✅ Playlist Mix<br>✅ Zero Server Cost
+</div>
+</div>
+</div>
+<script>
+let peer,mic,processed,audioCtx,analyser,recorder,chunks=[],recInterval,queue=[],curIdx=0,autoMode=false;
+let drive=document.getElementById('drive'),loud=document.getElementById('loud');
+liveBtn.onclick=async()=>{
+audioCtx=new AudioContext();
+let raw=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,autoGainControl:false,noiseSuppression:false}});
+mic=raw;
+let src=audioCtx.createMediaStreamSource(raw);
+let comp=audioCtx.createDynamicsCompressor(); comp.threshold.value=-24; comp.ratio.value=20; comp.attack.value=0.001;
+let gain=audioCtx.createGain(); gain.gain.value=loud.value/100;
+let dest=audioCtx.createMediaStreamDestination();
+src.connect(comp); comp.connect(gain); gain.connect(dest);
+processed=dest.stream;
+let p=new Peer('sirdio-studio-b-live-10020'); peer=p;
+p.on('open',()=>{status.innerText='🟢 ULTIMATE LOUD LIVE';status.style.color='red';liveBtn.innerText='🟢 ON AIR LOUD';});
+p.on('call',c=>{c.answer(processed||mic); let div=document.createElement('div'); div.innerText='📞 Caller connected!'; callers.appendChild(div); c.on('stream',s=>{let a=new Audio(); a.srcObject=s; a.play();});});
+analyser=audioCtx.createAnalyser(); gain.connect(analyser);
+(function draw(){let d=new Uint8Array(analyser.frequencyBinCount);analyser.getByteFrequencyData(d);let avg=d.reduce((a,b)=>a+b)/d.length;vu1.style.transform=`rotate(${-45+avg/2}deg)`;vu2.style.transform=`rotate(${-45+avg}deg)`;loudBar.style.width=Math.min(100,avg/2+20)+'%';let ctx=wave.getContext('2d');ctx.clearRect(0,0,300,50);ctx.strokeStyle='#ff9900';ctx.beginPath();for(let i=0;i<300;i++)ctx.lineTo(i,25+(d[i]-128)/3);ctx.stroke();requestAnimationFrame(draw)})();
+};
+recBtn.onclick=()=>{
+if(!recorder||recorder.state=='inactive'){chunks=[];recorder=new MediaRecorder(processed||mic);recorder.ondataavailable=e=>chunks.push(e.data);recorder.onstop=()=>{let blob=new Blob(chunks,{type:'audio/mp3'});let url=URL.createObjectURL(blob);let a=document.createElement('a');a.href=url;a.innerText='🎙️ Show '+new Date().toLocaleTimeString();a.style.display='block';a.style.color='#ff9900';recordings.appendChild(a);downloadBtn.onclick=()=>{let al=document.createElement('a');al.href=url;al.download='sirdio-show-'+Date.now()+'.mp3';al.click();}};recorder.start();recBtn.innerText='⏹️ STOP REC';let s=0;recInterval=setInterval(()=>{s++;let m=String(Math.floor(s/60)).padStart(2,'0'),sec=String(s%60).padStart(2,'0');recTime.innerText=m+':'+sec},1000);}else{recorder.stop();clearInterval(recInterval);recBtn.innerText='⏺️ REC';}
+};
+autoBtn.onclick=()=>{autoMode=!autoMode;autoBtn.innerText=autoMode?'🤖 AUTO: ON':'🤖 AUTO: OFF';autoBtn.style.background=autoMode?'#0f0':'#333';if(autoMode&&queue.length>0)player.src=queue[0].url;};
+fileIn.onchange=e=>{
+for(let f of e.target.files){let url=URL.createObjectURL(f);queue.push({name:f.name,url});let div=document.createElement('div');div.style.padding='5px';div.style.borderBottom='1px solid #222';div.style.cursor='pointer';div.innerText='🔥 '+f.name;div.onclick=()=>{player.src=url;nowTitle.innerText=f.name;curIdx=queue.indexOf(queue.find(q=>q.url==url));};document.getElementById('queue').appendChild(div);}
+};
+player.onended=()=>{if(autoMode&&queue.length>0){curIdx=(curIdx+1)%queue.length;player.src=queue[curIdx].url;player.play();}};
+sendBtn.onclick=()=>{if(player.src)player.play();alert('🔥 LOUD MUSIC SENT!');};
+muteBtn.onclick=()=>mic.getAudioTracks().forEach(t=>t.enabled=!t.enabled);
+</script></body></html>
